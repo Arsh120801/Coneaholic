@@ -18,15 +18,17 @@ const Review = require('./models/review');
 const {reviewschema} = require('./schemas.js');
 const icecreams = require('./routes/icecreams');
 const reviews = require('./routes/reviews');
-const session = require('express-session');
 const flash = require('connect-flash');
 const passport = require('passport');
 const localstrategy = require('passport-local');
 const User = require('./models/users');
 const usersroutes = require('./routes/users');
 
+const session = require('express-session');
+const MongoDBStore = require('connect-mongo');
 
-const  dbUrl= process.env.DB_URL || 'mongodb://localhost:27017/ic';
+//const dbUrl = process.env.DB_URL;
+const dbUrl = process.env.DB_URL || 'mongodb://localhost:27017/ic'
 mongoose.connect(dbUrl, {
     useNewUrlParser: true,
     //useCreateIndex: true,
@@ -47,12 +49,27 @@ app.engine('ejs',ejsMate);
 app.use(express.static('public'));
 app.use(express.static(path.join(__dirname,'public')));
 
+const secret = process.env.SECRET || 'second secret';
+
+const store = new MongoDBStore({
+    mongoUrl:dbUrl,
+    secret,
+    touchAfter:24*60*60,
+})
+
+store.on("error",function(e){
+    console.log("session error",e);
+})
+
 const sessionconfig={
-    secret : 'rntndcalcalencccmgavnpemppashn',
+    store,
+    name:'session',
+    secret,
     resave: false,
     saveUninitialized: true,
     cookie:{
         httpOnly:true,
+        //secure:true,
         expires: Date.now()+1000*60*60*24*7,
         maxAge: 1000*60*60*24*7
     }
@@ -100,6 +117,8 @@ app.use((err,req,res,next)=>{
     res.status(statusCode).render('error',{err});
 })
 
-app.listen(3000,()=>{
-    console.log("it's 3000");
+const port = process.env.PORT || 3000;
+
+app.listen(port,()=>{
+    console.log(`it is ${port}`);
 })
