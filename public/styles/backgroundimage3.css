@@ -4,8 +4,8 @@ body {
     url("https://res.cloudinary.com/coneaholic/image/upload/v1658164016/coneaholic/coneaholicwebpage_um53lf.jpg");
     background-size: cover;
     background-position: center;
-    text-shadow: 0 0.05rem 0.1rem rgba(0, 0, 0, 0.5);
     background-repeat: no-repeat;
     background-attachment: fixed;
     background-size: cover;
+    font-family: 'Alegreya Sans SC', sans-serif;
 }
