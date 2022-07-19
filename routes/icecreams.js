@@ -62,7 +62,7 @@ router.get('/:id/edit',isloggedin,isowner,catchasync(async(req,res)=>{
     res.render('icecreams/edit',{i});
 }))
 
-router.put('/:id',isloggedin,isowner,upload.array('image'),catchasync(async(req,res)=>{
+router.put('/:id',isloggedin,isowner,upload.array('image'),validatestore,catchasync(async(req,res)=>{
     //,validatestore
     const {id}= req.params;
     const i =await Icecream.findByIdAndUpdate(id, req.body.icecream, {runValidators: true, new:true});
